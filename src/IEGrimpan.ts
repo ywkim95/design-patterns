@@ -1,4 +1,4 @@
-import Grimpan from "./AbtractGrimpan.js";
+import Grimpan from "./AbstractGrimpan.js";
 
 class IEGrimpan extends Grimpan {
   private static instance: IEGrimpan;
@@ -14,7 +14,6 @@ class IEGrimpan extends Grimpan {
   //   // return instance;
   // }
   initialize() {}
-  initializeMenu() {}
 
   // SRP(Single Responsibility Principle) 원칙을 위반
   // 그림판을 생성하는 것

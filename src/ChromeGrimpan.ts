@@ -1,7 +1,7 @@
 // Grimpan 클래스 내부에 instance를 선언하게 되면 인스턴스가 각각 생성되므로 싱글톤 패턴에 맞지 않음
 // let instance: Grimpan;
 
-import Grimpan from "./AbtractGrimpan.js";
+import Grimpan from "./AbstractGrimpan.js";
 
 class ChromeGrimpan extends Grimpan {
   private static instance: ChromeGrimpan;
@@ -17,7 +17,6 @@ class ChromeGrimpan extends Grimpan {
   //   // return instance;
   // }
   initialize() {}
-  initializeMenu() {}
 
   // SRP(Single Responsibility Principle) 원칙을 위반
   // 그림판을 생성하는 것

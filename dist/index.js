@@ -21,25 +21,12 @@
 // main(Grimpan.getIntance());
 // main(Editor.getIntance());
 // main(MsPaint.getIntance());
-import ChromeGrimpan from "./ChromeGrimpan.js";
-import IEGrimpan from "./IEGrimpan.js";
-import AbstractGrimpanFactory from "./AbstractGrimpanFactory.js";
 // interface와 abstract 클래스의 차이
 // interface는 클래스에서 여러 개의 interface를 implements 할 수 있음
 // abstract 클래스는 클래스에서 하나의 abstract 클래스를 extends 할 수 있음
 // 팩토리 클래스를 사용하여 여러 타입의 그림판을 생성할 수 있음 (SRP, OCP 원칙을 지킴)
 // 메서드의 매개변수가 다른경우에도 구현하기 어렵지 않음
 // 단점으로는 복잡해지고 코드가 길어짐
-class ChromeGrimpanFactory extends AbstractGrimpanFactory {
-    static createGrimpan() {
-        return ChromeGrimpan.getInstance();
-    }
-}
-class IEGrimpanFactory extends AbstractGrimpanFactory {
-    static createGrimpan() {
-        return IEGrimpan.getInstance();
-    }
-}
 // class SafariGrimpanFactory extends AbstractGrimpanFactory {
 //   static override createGrimpan() {
 //     return SafariGrimpan.getInstance();
@@ -55,13 +42,17 @@ class IEGrimpanFactory extends AbstractGrimpanFactory {
 //     throw new Error("일치하는 type이 없습니다.");
 //   }
 // }
-function main(factory) {
+import { ChromeGrimpanFactory } from "./GrimpanFactory.js";
+function main() {
+    const factory = ChromeGrimpanFactory;
     const grimpan = factory.createGrimpan();
+    const grimpanMenu = factory.createGrimpanMenu(grimpan);
+    const grimpanHistory = factory.createGrimpanHistory(grimpan);
     grimpan.initialize();
-    grimpan.initializeMenu();
+    grimpanMenu.initialize();
+    grimpanHistory.initialize();
     // grimpanFactory("ie");
     // grimpanFactory("chrome");
     // grimpanFactory("safari");
 }
-main(ChromeGrimpanFactory);
-main(IEGrimpanFactory);
+main();

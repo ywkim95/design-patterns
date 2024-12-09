@@ -1,4 +1,4 @@
-import Grimpan from "./AbtractGrimpan.js";
+import Grimpan from "./AbstractGrimpan.js";
 class IEGrimpan extends Grimpan {
     static instance;
     // 유닛 테스트가 어려움(getInstance 메서드를 통해 간접적으로 테스트 가능)
@@ -12,7 +12,6 @@ class IEGrimpan extends Grimpan {
     //   // return instance;
     // }
     initialize() { }
-    initializeMenu() { }
     // SRP(Single Responsibility Principle) 원칙을 위반
     // 그림판을 생성하는 것
     // 그림판이 하나인 것을 보장하는 것
