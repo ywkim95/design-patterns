@@ -9,7 +9,7 @@ export class AbstractGrimpanFactory {
         throw new Error("하위 클래스에서 구현해야합니다.");
         // return Grimpan.getInstance() as unknown as Grimpan;
     }
-    static createGrimpanMenu(grimpan) {
+    static createGrimpanMenu(grimpan, dom) {
         throw new Error("하위 클래스에서 구현해야합니다.");
     }
     static createGrimpanHistory(grimpan) {
@@ -20,8 +20,8 @@ export class ChromeGrimpanFactory extends AbstractGrimpanFactory {
     static createGrimpan() {
         return ChromeGrimpan.getInstance();
     }
-    static createGrimpanMenu(grimpan) {
-        return ChromeGrimpanMenu.getInstance(grimpan);
+    static createGrimpanMenu(grimpan, dom) {
+        return ChromeGrimpanMenu.getInstance(grimpan, dom);
     }
     static createGrimpanHistory(grimpan) {
         return ChromeGrimpanHistory.getInstance(grimpan);
@@ -31,8 +31,8 @@ export class IEGrimpanFactory extends AbstractGrimpanFactory {
     static createGrimpan() {
         return IEGrimpan.getInstance();
     }
-    static createGrimpanMenu(grimpan) {
-        return IEGrimpanMenu.getInstance(grimpan);
+    static createGrimpanMenu(grimpan, dom) {
+        return IEGrimpanMenu.getInstance(grimpan, dom);
     }
     static createGrimpanHistory(grimpan) {
         return IEGrimpanHistory.getInstance(grimpan);

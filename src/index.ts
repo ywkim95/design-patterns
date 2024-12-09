@@ -55,10 +55,10 @@ import { AbstractGrimpanFactory, ChromeGrimpanFactory, IEGrimpanFactory } from "
 function main() {
   const factory = ChromeGrimpanFactory;
   const grimpan = factory.createGrimpan();
-  const grimpanMenu = factory.createGrimpanMenu(grimpan);
+  const grimpanMenu = factory.createGrimpanMenu(grimpan, document.querySelector("#menu")!);
   const grimpanHistory = factory.createGrimpanHistory(grimpan);
   grimpan.initialize();
-  grimpanMenu.initialize();
+  grimpanMenu.initialize(["back", "forward", "color", "pipette", "pen", "circle", "rectangle", "eraser"]);
   grimpanHistory.initialize();
   // grimpanFactory("ie");
   // grimpanFactory("chrome");
