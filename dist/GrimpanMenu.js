@@ -1,8 +1,9 @@
-import { BackCommand, CircleSelectCommand, EraserSelectCommand, PenSelectCommand, PipetteSelectCommand, RectangleSelectCommand, } from "./commands/index.js";
+import { BackCommand, SaveCommand, } from "./commands/index.js";
 import { GrimpanMenuBtn, GrimpanMenuInput } from "./GrimpanMenuBtn.js";
 export class GrimpanMenu {
     grimpan;
     dom;
+    colorBtn;
     constructor(grimpan, dom) {
         this.grimpan = grimpan;
         this.dom = dom;
@@ -10,7 +11,11 @@ export class GrimpanMenu {
     setActiveBtn(mode) {
         document.querySelector(".active")?.classList.remove("active");
         document.querySelector(`#${mode}-btn`)?.classList.add("active");
-        this.grimpan.setMode(mode);
+    }
+    // invoker의 역할
+    // 중앙에서 실행여부를 총괄하는 역할
+    executeCommand(command) {
+        command.execute();
     }
     static getInstance(grimpan, dom) { }
 }
@@ -28,32 +33,31 @@ export class ChromeGrimpanMenu extends GrimpanMenu {
     static instance;
     initialize(types) {
         types.forEach(this.drawButtonByType.bind(this));
-        this.setActiveBtn("pen");
+        this.grimpan.setMode("pen");
     }
-    // invoker의 역할
-    // 중앙에서 실행여부를 총괄하는 역할
-    executeCommand(command) {
-        command.execute();
+    onSave() {
+        this.executeCommand(new SaveCommand(this.grimpan));
     }
     onClickBack() {
         this.executeCommand(new BackCommand(this.grimpan.history));
     }
     onClickPen() {
-        const command = new PenSelectCommand(this.grimpan);
-        this.executeCommand(command);
-        this.grimpan.history.stack.push(command);
+        this.grimpan.setMode("pen");
+        // const command = new PenSelectCommand(this.grimpan);
+        // this.executeCommand(command);
+        // this.grimpan.history.stack.push(command);
     }
     onClickEraser() {
-        this.executeCommand(new EraserSelectCommand(this.grimpan));
+        this.grimpan.setMode("eraser");
     }
     onClickCircle() {
-        this.executeCommand(new CircleSelectCommand(this.grimpan));
+        this.grimpan.setMode("circle");
     }
     onClickRectangle() {
-        this.executeCommand(new RectangleSelectCommand(this.grimpan));
+        this.grimpan.setMode("rectangle");
     }
     onClickPipette() {
-        this.executeCommand(new PipetteSelectCommand(this.grimpan));
+        this.grimpan.setMode("pipette");
     }
     drawButtonByType(type) {
         switch (type) {
@@ -73,8 +77,11 @@ export class ChromeGrimpanMenu extends GrimpanMenu {
             }
             case "color": {
                 const btn = new GrimpanMenuInput.Builder(this, "컬러", type)
-                    .setOnChange(() => {
+                    .setOnChange((e) => {
                     // TODO: 컬러 변경 작업
+                    if (e.target) {
+                        this.grimpan.setColor(e.target.value);
+                    }
                 })
                     .build();
                 btn.draw();
@@ -106,7 +113,7 @@ export class ChromeGrimpanMenu extends GrimpanMenu {
                 return btn;
             }
             case "save": {
-                const btn = new GrimpanMenuBtn.Builder(this, "저장", type).build();
+                const btn = new GrimpanMenuBtn.Builder(this, "저장", type).setOnClick(this.onSave.bind(this)).build();
                 btn.draw();
                 return btn;
             }
