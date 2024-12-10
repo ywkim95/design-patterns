@@ -21,6 +21,8 @@ export class GrimpanHistory {
 export class ChromeGrimpanHistory extends GrimpanHistory {
     static instance;
     initialize() { }
+    undo() { }
+    redo() { }
     static getInstance(grimpan) {
         if (!this.instance) {
             this.instance = new ChromeGrimpanHistory(grimpan);
@@ -31,6 +33,8 @@ export class ChromeGrimpanHistory extends GrimpanHistory {
 export class IEGrimpanHistory extends GrimpanHistory {
     static instance;
     initialize() { }
+    redo() { }
+    undo() { }
     static getInstance(grimpan) {
         if (!this.instance) {
             this.instance = new IEGrimpanHistory(grimpan);

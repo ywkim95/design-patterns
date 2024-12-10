@@ -1,16 +1,51 @@
-// abstract 클래스를 생성함으로써 기존 그림판 클래스들이 상속받아 사용할 수 있음.
+import { ChromeGrimpanFactory, IEGrimpanFactory } from "./GrimpanFactory.js";
 class Grimpan {
-    constructor(canvas) {
+    canvas;
+    ctx;
+    history;
+    menu;
+    mode;
+    constructor(canvas, factory) {
         if (!canvas || !(canvas instanceof HTMLCanvasElement)) {
             throw new Error("canvas 엘리먼트를 입력하세요!");
         }
+        this.canvas = canvas;
+        this.ctx = this.canvas.getContext("2d");
+    }
+    setMode(mode) {
+        console.log("mode change", mode);
+        this.mode = mode;
     }
     static getInstance() { }
 }
 export default Grimpan;
-// 만약 interface로 구현한 경우
-// abstract나 static, protected, private 등의 접근제한자를 사용할 수 없음
-// interface Grimpan {
-//   initialize(): void;
-//   initializeMenu(): void;
-// }
+export class ChromeGrimpan extends Grimpan {
+    static instance;
+    menu;
+    history;
+    constructor(canvas, factory) {
+        super(canvas, factory);
+        this.menu = factory.createGrimpanMenu(this, document.querySelector("#menu"));
+        this.history = factory.createGrimpanHistory(this);
+    }
+    initialize(option) {
+        this.menu.initialize(option.menu);
+        this.history.initialize();
+    }
+    static getInstance() {
+        if (!this.instance) {
+            this.instance = new ChromeGrimpan(document.querySelector("#canvas"), ChromeGrimpanFactory);
+        }
+        return this.instance;
+    }
+}
+export class IEGrimpan extends Grimpan {
+    static instance;
+    initialize() { }
+    static getInstance() {
+        if (!this.instance) {
+            this.instance = new IEGrimpan(document.querySelector("#canvas"), IEGrimpanFactory);
+        }
+        return this.instance;
+    }
+}

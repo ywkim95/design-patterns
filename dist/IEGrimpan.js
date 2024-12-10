@@ -1,4 +1,5 @@
 import Grimpan from "./AbstractGrimpan.js";
+import { IEGrimpanFactory } from "./GrimpanFactory.js";
 class IEGrimpan extends Grimpan {
     static instance;
     // 유닛 테스트가 어려움(getInstance 메서드를 통해 간접적으로 테스트 가능)
@@ -17,7 +18,7 @@ class IEGrimpan extends Grimpan {
     // 그림판이 하나인 것을 보장하는 것
     static getInstance() {
         if (!this.instance) {
-            this.instance = new IEGrimpan(document.querySelector("#canvas"));
+            this.instance = new IEGrimpan(document.querySelector("#canvas"), IEGrimpanFactory);
         }
         return this.instance;
     }

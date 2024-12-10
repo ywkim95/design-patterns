@@ -1,8 +1,11 @@
 // Grimpan 클래스 내부에 instance를 선언하게 되면 인스턴스가 각각 생성되므로 싱글톤 패턴에 맞지 않음
 // let instance: Grimpan;
 import Grimpan from "./AbstractGrimpan.js";
+import { ChromeGrimpanFactory } from "./GrimpanFactory.js";
 class ChromeGrimpan extends Grimpan {
     static instance;
+    menu;
+    history;
     // 유닛 테스트가 어려움(getInstance 메서드를 통해 간접적으로 테스트 가능)
     // private constructor(canvas: HTMLElement | null) {
     //   if (!canvas || !(canvas instanceof HTMLCanvasElement)) {
@@ -13,13 +16,21 @@ class ChromeGrimpan extends Grimpan {
     //   // }
     //   // return instance;
     // }
-    initialize() { }
+    constructor(canvas, factory) {
+        super(canvas, factory);
+        this.menu = factory.createGrimpanMenu(this, document.querySelector("#menu"));
+        this.history = factory.createGrimpanHistory(this);
+    }
+    initialize(option) {
+        this.menu.initialize(option.menu);
+        this.history.initialize();
+    }
     // SRP(Single Responsibility Principle) 원칙을 위반
     // 그림판을 생성하는 것
     // 그림판이 하나인 것을 보장하는 것
     static getInstance() {
         if (!this.instance) {
-            this.instance = new ChromeGrimpan(document.querySelector("#canvas"));
+            this.instance = new ChromeGrimpan(document.querySelector("#canvas"), ChromeGrimpanFactory);
         }
         return this.instance;
     }
