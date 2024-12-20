@@ -33,7 +33,17 @@ export abstract class GrimpanMenuElement {
     this.type = type;
   }
 
-  abstract draw(): void;
+  draw() {
+    const btn = this.createButton();
+    this.appendBeforeBtn();
+    this.appendToDom(btn);
+    this.appendAfterBtn();
+  }
+
+  abstract createButton(): HTMLElement;
+  abstract appendBeforeBtn(): void;
+  abstract appendToDom(btn: HTMLElement): void;
+  abstract appendAfterBtn(): void;
 }
 
 export class GrimpanMenuInput extends GrimpanMenuElement {
@@ -46,7 +56,7 @@ export class GrimpanMenuInput extends GrimpanMenuElement {
     this.value = value;
   }
 
-  draw() {
+  createButton(): HTMLInputElement {
     const input = document.createElement("input");
     input.type = "color";
     input.title = this.name;
@@ -54,8 +64,19 @@ export class GrimpanMenuInput extends GrimpanMenuElement {
     if (this.onChange) {
       input.addEventListener("change", this.onChange.bind(this));
     }
-    this.menu.colorBtn = input;
-    this.menu.dom.append(input);
+
+    return input;
+  }
+
+  appendBeforeBtn() {
+    // 자식로직
+  }
+
+  appendAfterBtn() {}
+
+  appendToDom(btn: HTMLInputElement) {
+    this.menu.colorBtn = btn;
+    this.menu.dom.append(btn);
   }
 
   static Builder = class GrimpanMenuInputBuilder extends GrimpanMenuElementBuilder {
@@ -78,29 +99,89 @@ export class GrimpanMenuInput extends GrimpanMenuElement {
 }
 
 export class GrimpanMenuBtn extends GrimpanMenuElement {
-  private onClick?: () => void;
-  private active?: boolean;
+  protected onClick?: () => void;
+  protected active?: boolean;
 
-  private constructor(menu: GrimpanMenu, name: string, type: BtnType, onClick?: () => void, active?: boolean) {
+  protected constructor(menu: GrimpanMenu, name: string, type: BtnType, onClick?: () => void, active?: boolean) {
     super(menu, name, type);
     this.onClick = onClick;
     this.active = active;
   }
 
-  draw() {
+  createButton(): HTMLButtonElement {
     const btn = document.createElement("button");
     btn.textContent = this.name;
     btn.id = `${this.type}-btn`;
     if (this.onClick) {
       btn.addEventListener("click", this.onClick.bind(this));
     }
+    return btn;
+  }
+
+  appendBeforeBtn() {
+    // 자식로직
+  }
+
+  appendAfterBtn() {}
+
+  appendToDom(btn: HTMLButtonElement) {
     this.menu.dom.append(btn);
   }
+
   static Builder = class GrimpanMenuBtnBuilder extends GrimpanMenuElementBuilder {
     override btn: GrimpanMenuBtn;
     constructor(menu: GrimpanMenu, name: string, type: BtnType) {
       super();
       this.btn = new GrimpanMenuBtn(menu, name, type);
+    }
+
+    setOnClick(onClick: () => void) {
+      this.btn.onClick = onClick;
+      return this;
+    }
+
+    setActive(active: boolean) {
+      this.btn.active = active;
+      return this;
+    }
+  };
+}
+
+export class GrimpanSaveMenuBtn extends GrimpanMenuBtn {
+  private onClickBlur!: (e: Event) => void;
+  private onClickInvert!: (e: Event) => void;
+  private onClickGrayscale!: (e: Event) => void;
+
+  private constructor(menu: GrimpanMenu, name: string, type: BtnType, onClick?: () => void, active?: boolean) {
+    super(menu, name, type);
+  }
+
+  override appendBeforeBtn(): void {
+    this.drawInput("블러", this.onClickBlur);
+    this.drawInput("반전", this.onClickInvert);
+    this.drawInput("흑백", this.onClickGrayscale);
+  }
+
+  drawInput(title: string, onChange: (e: Event) => void) {
+    const input = document.createElement("input");
+    input.type = "checkbox";
+    input.title = title;
+    input.addEventListener("change", onChange.bind(this));
+    this.menu.dom.append(input);
+  }
+
+  static override Builder = class GrimpanMenuSaveBtnBuilder extends GrimpanMenuElementBuilder {
+    override btn: GrimpanSaveMenuBtn;
+    constructor(menu: GrimpanMenu, name: string, type: BtnType) {
+      super();
+      this.btn = new GrimpanSaveMenuBtn(menu, name, type);
+    }
+
+    setFilterListeners(listeners: { [key in "blur" | "invert" | "grayscale"]: (e: Event) => void }) {
+      this.btn.onClickBlur = listeners.blur;
+      this.btn.onClickInvert = listeners.invert;
+      this.btn.onClickGrayscale = listeners.grayscale;
+      return this;
     }
 
     setOnClick(onClick: () => void) {
