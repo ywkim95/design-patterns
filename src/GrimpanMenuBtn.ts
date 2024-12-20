@@ -158,8 +158,8 @@ export class GrimpanSaveMenuBtn extends GrimpanMenuBtn {
 
   override appendBeforeBtn(): void {
     this.drawInput("블러", this.onClickBlur);
-    this.drawInput("반전", this.onClickInvert);
     this.drawInput("흑백", this.onClickGrayscale);
+    this.drawInput("반전", this.onClickInvert);
   }
 
   drawInput(title: string, onChange: (e: Event) => void) {
